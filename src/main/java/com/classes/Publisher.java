@@ -9,9 +9,10 @@ import com.rabbitmq.client.ConnectionFactory;
 
 public class Publisher {
     private static final String EXCHANGE = "MyExchange";
-    public static void main(String[] args) throws IOException, TimeoutException {
+
+    public Publisher() throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
+        factory.setHost("192.168.72.128");
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
             channel.exchangeDeclare(EXCHANGE, "fanout");

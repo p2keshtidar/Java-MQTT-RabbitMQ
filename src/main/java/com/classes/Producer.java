@@ -11,9 +11,9 @@ import com.rabbitmq.client.ConnectionFactory;
 public class Producer {
     private static String QUEUE = "MyFirstQueue";
 
-    public static void main(String[] args) throws IOException, TimeoutException {
+    public Producer() throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
+        factory.setHost("192.168.72.128");
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
             channel.queueDeclare(QUEUE, false, false, false, null);
