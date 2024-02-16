@@ -1,5 +1,4 @@
-package com.packages;
-
+package com.classes;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
@@ -9,22 +8,23 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
-public class Consumer {
-    private static String QUEUE = "MyFirstQueue";
-
+public class Subscriber {
+    private static String EXCHANGE = "MyExchange";
     public static void main(String[] args) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
+        channel.exchangeDeclare(EXCHANGE, "fanout");
 
-        channel.queueDeclare(QUEUE, false, false, false, null);
+        String queueName = channel.queueDeclare().getQueue();
+        channel.queueBind(queueName, EXCHANGE, "");
         System.out.println("Waiting for messages. To exit press CTRL+C");
 
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
             System.out.println("Received '" + message + "'");
         };
-        channel.basicConsume(QUEUE, true, deliverCallback, consumerTag -> { });
+        channel.basicConsume(queueName, true, deliverCallback, consumerTag -> { });
     }
 }
